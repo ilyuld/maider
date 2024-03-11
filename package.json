@@ -2,20 +2,34 @@
   "name": "cursatch",
   "version": "0.1.0",
   "private": true,
+  "main": "index.js",
+  "author": "cursatch",
+  "license": "MIT",
+  "homepage": "./",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "d3": "^7.8.5",
+    "electron": "^29.1.0",
+    "jquery": "^3.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.1.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "electron-packager ./ --platform=win32 --arch=x64 cursatch",
+    "rbuild": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "exe": "electron-packeger D:/electron --platform=win32 --arch=x64 ElectricEye"
   },
   "eslintConfig": {
     "extends": [
@@ -33,6 +47,28 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-deb": "^7.2.0",
+    "@electron-forge/maker-rpm": "^7.2.0",
+    "@electron-forge/maker-squirrel": "^7.2.0",
+    "@electron-forge/maker-zip": "^7.2.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+    "@types/jquery": "^3.5.27",
+    "electron": "^28.1.0",
+    "electron-packager": "^17.1.2"
+  },
+  "build": {
+    "directories": {
+      "buildResources": "build",
+      "app": "build"
+    },
+    "files": [
+      "*.js",
+      "build",
+      "node_modules"
     ]
   }
 }
