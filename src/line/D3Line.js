@@ -50,7 +50,7 @@ D3Line.createGraph = (svg, data, conf) => {
             }))
         .range([conf.ml, width - conf.mr]),
       yAxis = d3.scaleLinear()
-        .domain([d3.min(allData, (d) => +d.value), d3.max(allData, (d) => +d.value)])
+        .domain([0, d3.max(allData, (d) => +d.value)])
         .range([height - conf.mb, conf.mt]);
 
     svg.append("g")
