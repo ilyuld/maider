@@ -35,7 +35,7 @@ function CalculateMaider(input){
     const E0 = parseFloat(input["Начальная энергия"]),
         RO0 = parseFloat(input["Начальная плотность"]),
         P0 = parseFloat(input["Начальное давление"]),
-        M = parseInt(input["M"]),
+        M = parseInt(input["M"]) > 50000 ? 50000 : parseInt(input["M"]),
         k = parseFloat(input["k"]),
         L0 = parseFloat(input["L0"]),
         AKR = parseFloat(input["AKR"]),
@@ -51,9 +51,16 @@ function CalculateMaider(input){
         E = [],
         Q = [],
         H = [],
-        RO = [RO0]
+        RO = [RO0],
+        ENK = [],
+        ENV = [],
+        ENT = [],
+        disb = [],
+        time = [],
+        last_M_V = [],
+        P_0M = []
 
-    const DX = L0 / (M - 1),
+    const DX = L0 / (M - 2),
         H0 = RO0 * DX
 
     
@@ -103,7 +110,7 @@ function CalculateMaider(input){
         }
 
         for (let i = 1; i < (M); i++){
-            U1.push(U[i] - (DT * (P[i] + Q[i] - P[i-1] - Q[i-1])) / (0.5*(H[i] + H[i - 1])))
+            U1.push(U[i] - DT * (P[i] + Q[i] - P[i-1] - Q[i-1]) / (0.5*(H[i] + H[i - 1])))
         }
 
         for (let i = 0; i < (M-1); i++){
@@ -137,7 +144,7 @@ function CalculateMaider(input){
         for (let i = 0; i < (M - 1); i++){
             RO[i] = H[i] / (X[i + 1] - X[i]) 
         }
-
+        
         for (let i = 1; i < (M); i++){
             U[i] = U1[i]
         }
@@ -146,12 +153,20 @@ function CalculateMaider(input){
             P[i] = RO[i]*E[i]*(k-1)
         }
         let EnergyParameters = EN(U, E, H, 0, M-1)
+        ENK.push(EnergyParameters["ENK"])
+        ENV.push(EnergyParameters["ENV"])
+        ENT.push(EnergyParameters["ENT"])
+        disb.push((ENV[0] - (EnergyParameters["ENV"] + EnergyParameters["ENK"]))/ENV[0])
+        time.push(T)
+        last_M_V.push(U[U.length - 1])
+        P_0M.push(P[0])
         console.log(EnergyParameters)
         if (T > TLIM){
             console.log(T)
             break
         }
     }
+    console.log(time)
     console.log(`X: ${X}`,`U: ${U}`,`P: ${P}`,`RO: ${RO}`,`H: ${H}`,`E: ${E}`)
     return {
             "message": "Успешно",
@@ -162,7 +177,14 @@ function CalculateMaider(input){
                 "RO": RO,
                 "H": H,
                 "E": E,
-                "X0": X0
+                "X0": X0,
+                "ENK": ENK,
+                "ENT": ENT,
+                "ENV": ENV,
+                "disb": disb,
+                "time":time,
+                "last_M_V": last_M_V,
+                "P_0M": P_0M
             }
         }
 }

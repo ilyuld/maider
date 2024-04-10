@@ -33,7 +33,11 @@ function Charts(props){
                             <h3>{parameter}</h3>
                             <div className='chart-container' id={parameter}>
                                 <Line data={[{"key":parameter, "values": VALUES[parameter].map((value, idx) => {
-                                    return {x: VALUES["X"][idx], value: value}
+                                    if (["ENK", "ENT", "ENV", "disb", "last_M_V", "P_0M"].indexOf(parameter) !== -1){
+                                        return {x: VALUES["time"][idx], value: value}
+                                    } else {
+                                        return {x: VALUES["X"][idx], value: value}
+                                    }
                                 })}]} conf={CFG} />
                             </div> 
                         </div>   
