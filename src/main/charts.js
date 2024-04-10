@@ -33,7 +33,7 @@ function Charts(props){
                             <h3>{parameter}</h3>
                             <div className='chart-container' id={parameter}>
                                 <Line data={[{"key":parameter, "values": VALUES[parameter].map((value, idx) => {
-                                    return {x: VALUES["X0"][idx], value: value}
+                                    return {x: VALUES["X"][idx], value: value}
                                 })}]} conf={CFG} />
                             </div> 
                         </div>   

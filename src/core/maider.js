@@ -4,6 +4,18 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Result } from "../store/result/result.js";
 
+function EN(U, E, H, N1, N2){
+    let ENT = 0,
+        ENK = 0,
+        ENV = 0
+
+    for (let i = N1; i < N2; i++){
+        ENK += 0.5*H[i]*Math.pow(((U[i+1] + U[i])/2), 2)
+        ENV += H[i]*E[i]
+        ENT = ENK + ENV
+    }
+    return {"ENK": ENK, "ENV": ENV, "ENT": ENT}
+}
 function init(value){
     if (!includesArray(value, ["M", "L0", "k", "Начальное давление", "Начальная плотность", "AKR", "Условие по времени"])){
         return {isError:true, message: "Не полный ввод данных"}
@@ -78,7 +90,7 @@ function CalculateMaider(input){
             C.push(Math.sqrt(k*P[i]/RO[i]))
             DTSEL.push(AKR*H0/(RO[i]*C[i]))
         }
-        
+
         DT = Math.min.apply(null, DTSEL)
         T += DT
 
@@ -133,7 +145,10 @@ function CalculateMaider(input){
         for (let i = 0; i < (M - 1); i++){
             P[i] = RO[i]*E[i]*(k-1)
         }
+        let EnergyParameters = EN(U, E, H, 0, M-1)
+        console.log(EnergyParameters)
         if (T > TLIM){
+            console.log(T)
             break
         }
     }
