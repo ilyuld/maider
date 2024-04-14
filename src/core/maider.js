@@ -1,3 +1,5 @@
+"use strict";
+
 import { useSelector } from "react-redux";
 import { includesArray } from "../store/input/input.js"
 import React, { useEffect, useState } from "react";
@@ -42,7 +44,9 @@ function CalculateMaider(input){
         TLIM = parseFloat(input["Условие по времени"]),
         border = M - 1,
         fictiv = M,
-        preBorder = M - 2
+        preBorder = M - 2,
+        AKV = 1.68*Math.pow(10, 0),
+        AKL = 1.72*Math.pow(10, 0)
 
 
         const U = [0],
@@ -93,24 +97,32 @@ function CalculateMaider(input){
             U1 = [0],
             C = [0]
  
-        for (let i = 1; i < (M - 2); i++){
+        for (let i = 1; i < (M - 1); i++){
             C.push(Math.sqrt(k*P[i]/RO[i]))
             DTSEL.push(AKR*H0/(RO[i]*C[i]))
         }
 
         DT = Math.min.apply(null, DTSEL)
-        T += DT
-
+        T+=DT
         if (!DT || DT <= 0){
             break
         }
 
-        for (let i = 0; i < (M); i++){
+        for (let i = 0; i < (M - 1); i++){
             Q[i] = 0
+            const deltu = U[i+1] - U[i]
+            if (deltu < 0){
+                Q[i] = AKV*RO[i]*Math.pow(deltu, 2) - AKL*RO[i]*C[i]*deltu
+            }
         }
-
+        
         for (let i = 1; i < (M); i++){
-            U1.push(U[i] - DT * (P[i] + Q[i] - P[i-1] - Q[i-1]) / (0.5*(H[i] + H[i - 1])))
+            
+            if (X[i] <= L0*3){
+                U1.push(U[i] - DT * (P[i] + Q[i] - P[i-1] - Q[i-1]) / (0.5*(H[i] + H[i - 1])))
+            } else {
+                U1.push(0)
+            }
         }
 
         for (let i = 0; i < (M-1); i++){
@@ -142,7 +154,7 @@ function CalculateMaider(input){
         }
 
         for (let i = 0; i < (M - 1); i++){
-            RO[i] = H[i] / (X[i + 1] - X[i]) 
+            RO[i] = H[i] / (X[i + 1] - X[i])
         }
         
         for (let i = 1; i < (M); i++){
@@ -160,14 +172,12 @@ function CalculateMaider(input){
         time.push(T)
         last_M_V.push(U[U.length - 1])
         P_0M.push(P[0])
-        console.log(EnergyParameters)
         if (T > TLIM){
             console.log(T)
             break
         }
     }
-    console.log(time)
-    console.log(`X: ${X}`,`U: ${U}`,`P: ${P}`,`RO: ${RO}`,`H: ${H}`,`E: ${E}`)
+    console.log(`X: ${X}`,`U: ${U}`,`P: ${P}`,`RO: ${RO}`,`H: ${H}`,`E: ${E}`, `Q: ${Q}`)
     return {
             "message": "Успешно",
             "result": {
@@ -178,6 +188,7 @@ function CalculateMaider(input){
                 "H": H,
                 "E": E,
                 "X0": X0,
+                "Q":Q,
                 "ENK": ENK,
                 "ENT": ENT,
                 "ENV": ENV,
