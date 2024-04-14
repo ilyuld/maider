@@ -45,8 +45,8 @@ function CalculateMaider(input){
         border = M - 1,
         fictiv = M,
         preBorder = M - 2,
-        AKV = 1.68*Math.pow(10, 0),
-        AKL = 1.72*Math.pow(10, 0)
+        AKV = 5,
+        AKL = 2.5
 
 
         const U = [0],
